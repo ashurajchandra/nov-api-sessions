@@ -1,21 +1,22 @@
 const jwt = require("jsonwebtoken")
-require("dotenv").config()
+require("dotenv")
 
-module.exports.verifyToken=(req, res, next)=>{
-    try{
+module.exports.verifyToken = (req, res, next) => {
+  try {
 
-        //token from header
-        const token = req.headers.authorization;
-        console.log("token", token)
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY )
-console.log("decodedToken",decodedToken)
-        //verification successful
-        next()
-    }catch(error){
-      return res.status(401).json({
-        message:'Token is not valid',
-        data:[],
-        error:error
-      })
-    }
-}
+    //get the token 
+    const token = req.headers.authorization;
+    console.log("token",token)
+    //verify the token
+    const verifiedToken = jwt.verify(token, process.env.SECRET_KEY)
+    //if token verification is success
+    console.log("verifiedToken",verifiedToken)
+      next()
+  } catch (error) {
+    return res.status(401).json({
+      message: "Please check your token",
+      data: [],
+      error: error,
+    });
+  }
+};
