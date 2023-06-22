@@ -1,6 +1,6 @@
 const User = require("../Model/user");
-const jwt = require('jsonwebtoken');
-require('dotenv').config()
+const jwt = require("jsonwebtoken")
+require("dotenv")
 
 module.exports.registerUser = async (req, res) => {
   try {
@@ -54,7 +54,7 @@ module.exports.loginUser = async(req, res) => {
               })
         }
 
-        const token = jwt.sign({id:existingUser._id, email:existingUser.email}, process.env.JWT_SECRET_KEY)
+        const token = jwt.sign({email:existingUser.email, id:existingUser._id, name:existingUser.name}, process.env.SECRET_KEY)
 
         return res.status(200).json({
             message:"User login successfully",
