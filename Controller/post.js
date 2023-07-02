@@ -5,7 +5,7 @@ const posts = [];
 module.exports.createPost = async (req, res) => {
 try{
     const { title, description, image } = req.body;
-
+console.log("userId",req.body.userId )
     if(title=="" ){
         return res.status(201).json({
             message: "Title should not be empty",
@@ -17,6 +17,7 @@ try{
       title: req.body.title,
       description: req.body.description,
       image: req.body.image,
+      userId:req.body.userId
     });
     return res.status(201).json({
       message: "Post created successfully",
@@ -33,7 +34,7 @@ try{
 
 module.exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).populate('userId').exec();
     return res.status(200).json({
       message: "Here is your posts from db",
       data: posts,
