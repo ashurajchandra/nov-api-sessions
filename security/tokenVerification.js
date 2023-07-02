@@ -11,6 +11,7 @@ module.exports.verifyToken = (req, res, next) => {
     const verifiedToken = jwt.verify(token, process.env.SECRET_KEY)
     //if token verification is success
     console.log("verifiedToken",verifiedToken)
+    req.body.userId = verifiedToken.id
       next()
   } catch (error) {
     return res.status(401).json({
