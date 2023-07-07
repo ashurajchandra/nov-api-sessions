@@ -5,7 +5,7 @@ const posts = [];
 module.exports.createPost = async (req, res) => {
 try{
     const { title, description, image } = req.body;
-
+console.log("hello test")
     if(title=="" ){
         return res.status(201).json({
             message: "Title should not be empty",
