@@ -1,6 +1,10 @@
 const User = require("../Model/user");
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
+const _ = require('lodash/core');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const { validationResult } = require('express-validator');
 
 module.exports.registerUser = async (req, res) => {
   try {
@@ -9,10 +13,27 @@ module.exports.registerUser = async (req, res) => {
 
     const { name, email, password, confirmPassword, age } = req.body;
 
+  const error = validationResult(req);
+
+  if(!error.isEmpty()){
+      return res.status(400).json({error: error.array() })
+  }
+
+    // if(_.isEmpty(name) ||_.isEmpty(email) || _.isEmpty(password)  ){
+    //   return res.status(400).json({
+    //     message:" Please check...required field is missing",
+    //     data:[],
+    //   })
+    // }
+  
+
+    const salt  = await bcrypt.genSalt(saltRounds)
+    const hashedPassword = await bcrypt.hash(password,salt )
+console.log("hashedPassword",hashedPassword)
     const newUser = await User.create({
       name: req.body.name,
       email: email,
-      password: password,
+      password: hashedPassword,
     //   confirmPassword: confirmPassword,
       age: age,
     });
@@ -25,6 +46,7 @@ module.exports.registerUser = async (req, res) => {
     })
   } catch (error) {
     //error
+    console.log("error",error)
       return res.status(400).json({
         message:'Error occurred while registering user',
         data:[],
@@ -46,8 +68,9 @@ module.exports.loginUser = async(req, res) => {
             data:[]
           })
         }
-
-        if(existingUser.password != req.body.password){
+     const verifyPassword = await bcrypt.compare(req.body.password,existingUser.password)
+     console.log("verifyPassword",verifyPassword)
+        if(!verifyPassword){  //false
             return res.status(404).json({
                 message:"Password is incorrect ",
                 data:[]

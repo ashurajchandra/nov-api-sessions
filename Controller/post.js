@@ -1,12 +1,12 @@
 const Post = require("../Model/post");
-
+const _ = require('lodash/core');
 const posts = [];
 
 module.exports.createPost = async (req, res) => {
 try{
     const { title, description, image } = req.body;
 console.log("hello test")
-    if(title=="" ){
+    if(_.isEmpty(title) ){
         return res.status(201).json({
             message: "Title should not be empty",
             data: [],
